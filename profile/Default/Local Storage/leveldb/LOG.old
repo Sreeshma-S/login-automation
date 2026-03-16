@@ -1,0 +1,5 @@
+2026/03/16-15:01:35.264 6d90 Reusing MANIFEST /home/workspacehut/Documents/interview tasks/travnook/login-script/profile/Default/Local Storage/leveldb/MANIFEST-000001
+2026/03/16-15:01:35.276 6d90 Recovering log #4
+2026/03/16-15:01:35.276 6d90 Reusing old log /home/workspacehut/Documents/interview tasks/travnook/login-script/profile/Default/Local Storage/leveldb/000004.log 
+2026/03/16-15:02:16.995 6d90 Level-0 table #8: started
+2026/03/16-15:02:17.018 6d90 Level-0 table #8: 295029 bytes OK
