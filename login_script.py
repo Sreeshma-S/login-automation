@@ -4,7 +4,7 @@ import random
 import logging
 from datetime import datetime
 from DrissionPage import ChromiumPage, ChromiumOptions
-from config import EMAIL, PASSWORD, BASE_URL, LOGIN_URL, HEADLESS
+from config import EMAIL, PASSWORD, BASE_URL, LOGIN_URL
 
 logging.basicConfig(level=logging.INFO)
 
@@ -63,22 +63,7 @@ def login():
 
     # preferences to make the browser more human-like
     co.set_user_data_path("./user_profile")
-    
-    if HEADLESS:
-        co.executable_path = "/usr/bin/google-chrome" 
-        co.set_argument("--headless")
-        co.set_argument("--remote-debugging-port=9224")
-        co.set_argument("--remote-debugging-address=127.0.0.1")  # force IPv4
-        co.set_argument("--window-size=1920,1080")
-        co.set_argument("--disable-gpu")          # required for headless on Linux
-        co.set_argument("--no-sandbox")           # required for root or restricted env
-        co.set_argument("--disable-dev-shm-usage") # avoid shared memory issues
-        co.set_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36")
-        co.set_argument("--start-maximized")
-    else:
-        co.set_argument("--start-maximized")
-    
+    co.set_argument("--start-maximized")
     co.set_argument("--disable-blink-features=AutomationControlled")
     co.set_argument("--disable-infobars")
 

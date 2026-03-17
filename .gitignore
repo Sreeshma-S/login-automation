@@ -1,3 +1,4 @@
 .env
 user_profile/
 screenshots/
+__pycache__/
