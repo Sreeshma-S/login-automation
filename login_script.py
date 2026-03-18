@@ -28,44 +28,62 @@ def type_like_human(element, text):
 
 # exception handling for verification challenge
 def wait_for_verification(page):
-    """
-    Wait for Cloudflare / verification challenge
-    to be completed manually if it appears.
-    """
-
-    logging.info("Checking for verification challenge")
+    logging.info("Checking for Cloudflare verification")
 
     start = time.time()
 
     while time.time() - start < 180:
 
-        frames = page.eles('xpath://iframe[contains(@src,"challenges.cloudflare")]')
+        page.actions.move(200, 300)
+        time.sleep(1)
+        page.actions.move(400, 500)
+
+        frames = page.eles('xpath://iframe[contains(@src,"challenge") or contains(@src,"turnstile")]')
 
         if not frames:
-            logging.info("No verification iframe detected")
+            logging.info("No verification detected")
             return
 
-        logging.info("Verification present. Please complete it in browser...")
+        logging.info("Cloudflare challenge detected")
+
+        # try solving automatically
+        solve_turnstile(page)
+
         time.sleep(5)
 
-        frames = page.eles('xpath://iframe[contains(@src,"challenges.cloudflare")]')
+    logging.warning("Verification timeout")
 
-        if not frames:
-            logging.info("Verification completed")
-            return
+def solve_turnstile(page):
 
-    logging.warning("Verification timeout reached")
+    frame = page.ele('xpath://iframe[contains(@src,"turnstile")]', timeout=10)
 
+    if not frame:
+        return
+
+    logging.info("Turnstile frame detected")
+
+    turnstile = frame.frame()
+
+    checkbox = turnstile.ele('xpath://input[@type="checkbox"]', timeout=5)
+
+    if checkbox:
+        checkbox.click()
+        logging.info("Clicked Cloudflare checkbox")
 
 def login():
     # Chromium browser configuration object
     co = ChromiumOptions()
 
     # preferences to make the browser more human-like
-    co.set_user_data_path("./user_profile")
+    # co.set_user_data_path("./chrome_profile")
+    # co.set_user_data_path("/tmp/chrome_fresh_profile")
+    co.set_browser_path("/usr/bin/brave-browser")
+    co.set_user_data_path("./brave_profile")
     co.set_argument("--start-maximized")
     co.set_argument("--disable-blink-features=AutomationControlled")
     co.set_argument("--disable-infobars")
+    co.set_argument("--disable-dev-shm-usage")
+    co.set_argument("--no-sandbox")
 
     # creates the browser instance
     page = ChromiumPage(co)
@@ -112,6 +130,8 @@ def login():
             login_btn.click()
 
         time.sleep(5)
+
+        wait_for_verification(page)
 
         logging.info(f"Current URL: {page.url}")
 
